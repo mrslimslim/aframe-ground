@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>微缩景观</title>
+    <script src="/lib/aframe.js"></script>
+  </head>
+  <body>
+    <a-scene>
+     
+      <a-entity position="0 0 1">
+        <a-plane position="0 1 -5" rotation="-90 0 0" width="8" height="8" color="#ffffff" shadow></a-plane>
+        <a-entity
+          gltf-model="/personal_computer/scene.gltf"
+          scale="0.6 0.6 0.6"
+          position='-1 2 -1'
+          rotation="0 180 0"
+        ></a-entity>
+        <a-cylinder
+          position="0 1 -5"
+          rotation="0 0 90"
+          radius="0.02"
+          height="3"
+          color="#7bed9f"
+          material="opacity: 0.5;"
+          shadow
+        >
+        </a-cylinder>
+        <a-cylinder
+          position="-2.5 1 -5"
+          rotation="0 0 90"
+          animation="property: position; to: 2.4 1 -5; dur: 2000; easing: linear; loop: true"
+          radius="0.02"
+          height="0.2"
+          color="#18dcff"
+          material="opacity: 0.8;"
+          shadow
+        >
+        </a-cylinder>
+        <a-cylinder
+          position="-2.5 1 -5"
+          rotation="0 0 90"
+          animation="property: position; to: 2.4 1 -5; dur: 2000; easing: linear; loop: true;delay: 300;"
+          radius="0.02"
+          height="0.2"
+          color="#18dcff"
+          material="opacity: 0.8;"
+          shadow
+        >
+        </a-cylinder>
+        <a-cylinder
+          position="-2.5 1 -5"
+          rotation="0 0 90"
+          animation="property: position; to: 2.4 1 -5; dur: 2000; easing: linear; loop: true;delay: 500;"
+          radius="0.02"
+          height="0.2"
+          color="#18dcff"
+          material="opacity: 0.8;"
+          shadow
+        >
+        </a-cylinder>
+        <a-cylinder
+          position="-2.5 1 -5"
+          rotation="0 0 90"
+          animation="property: position; to: 2.4 1 -5; dur: 2000; easing: linear; loop: true;delay: 700;"
+          radius="0.02"
+          height="0.2"
+          color="#18dcff"
+          material="opacity: 0.8;"
+          shadow
+        >
+        </a-cylinder>
+      </a-entity>
+      <!-- <a-entity light="type: hemisphere; color: #333; groundColor: #000; intensity: 2"></a-entity> -->
+      <a-light type="directional" color="#fff" intensity="0.45" position="4 4 -2"></a-light>
+      <a-camera position="0.5 3.5 3"></a-camera>
+      <!-- <a-entity>
+        <a-cylinder
+          position="4 0 -5"
+          radius="0.02"
+          height="3"
+          color="#7bed9f"
+          material="opacity: 0.5;"
+          shadow
+        >
+        </a-cylinder>
+      </a-entity> -->
+      
+    </a-scene>
+  </body>
+</html>

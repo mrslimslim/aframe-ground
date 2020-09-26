@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>微缩景观</title>
+    <script src="/lib/aframe.js"></script>
+    <script src="/lib/aframe-ar.js"></script>
+    <script src="/lib/gesture-detector.js"></script>
+    <script src="/lib/gesture-handler.js"></script>
+  </head>
+  <body>
+    <a-scene
+      embedded
+      arjs="cameraParametersUrl:./camera_para.dat;sourceType: webcam; debugUIEnabled: false;"
+      renderer="logarithmicDepthBuffer: true;"
+      gesture-detector
+      id="scene"
+    >
+      <a-marker
+        preset="hiro"
+        id="markerA"
+        raycaster="objects: .clickable"
+        emitevents="true"
+        cursor="fuse: false; rayOrigin: mouse;"
+      >
+        <a-entity
+          class="clickable"
+          id="bowser-model"
+        >
+          <a-cylinder
+            position="0 2 -5"
+            rotation="0 0 90"
+            radius="0.02"
+            height="5"
+            color="#7bed9f"
+            material="opacity: 0.5;"
+            shadow
+          >
+          </a-cylinder>
+          <a-cylinder
+            position="-2.5 2 -5"
+            rotation="0 0 90"
+            animation="property: position; to: 2.4 2 -5; dur: 2000; easing: linear; loop: true"
+            radius="0.02"
+            height="0.2"
+            color="#18dcff"
+            material="opacity: 0.8;"
+            shadow
+          >
+          </a-cylinder>
+          <a-cylinder
+            position="-2.5 2 -5"
+            rotation="0 0 90"
+            animation="property: position; to: 2.4 2 -5; dur: 2000; easing: linear; loop: true;delay: 300;"
+            radius="0.02"
+            height="0.2"
+            color="#18dcff"
+            material="opacity: 0.8;"
+            shadow
+          >
+          </a-cylinder>
+          <a-cylinder
+            position="-2.5 2 -5"
+            rotation="0 0 90"
+            animation="property: position; to: 2.4 2 -5; dur: 2000; easing: linear; loop: true;delay: 500;"
+            radius="0.02"
+            height="0.2"
+            color="#18dcff"
+            material="opacity: 0.8;"
+            shadow
+          >
+          </a-cylinder>
+          <a-cylinder
+            position="-2.5 2 -5"
+            rotation="0 0 90"
+            animation="property: position; to: 2.4 2 -5; dur: 2000; easing: linear; loop: true;delay: 700;"
+            radius="0.02"
+            height="0.2"
+            color="#18dcff"
+            material="opacity: 0.8;"
+            shadow
+          >
+          </a-cylinder>
+        </a-entity>
+      </a-marker>
+
+      <!-- <a-entity>
+        <a-cylinder
+          position="4 0 -5"
+          radius="0.02"
+          height="3"
+          color="#7bed9f"
+          material="opacity: 0.5;"
+          shadow
+        >
+        </a-cylinder>
+      </a-entity> -->
+      <a-entity camera></a-entity>
+    </a-scene>
+  </body>
+</html>

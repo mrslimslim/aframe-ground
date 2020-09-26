@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script src="/lib/three.js"></script>
+    <script src="/lib/OrbitControls.js"></script>
+    <script src="/lib/GLTFLoader.js"></script>
+    <script src="/lib/cga.js"></script>
+    <script>
+      class Program {
+        constructor() {
+          this.scene = null;
+          this.camera = null;
+          this.renderer = null;
+          this.mesh1 = null;
+          this.init();
+        }
+
+        initScene() {
+          this.scene = new THREE.Scene();
+        }
+
+        initCamera() {
+          this.camera = new THREE.PerspectiveCamera(
+            45,
+            window.innerWidth / window.innerHeight,
+            1,
+            10000
+          );
+          this.camera.position.z = 30;
+          this.camera.position.x = 15;
+          this.camera.position.y = 30;
+          this.camera.up.x = 0;
+          this.camera.up.y = 1;
+          this.camera.up.z = 0;
+          this.camera.lookAt(0, 0, 0);
+        }
+
+        initRenderer() {
+          this.renderer = new THREE.WebGLRenderer({
+            antialias: true,
+          });
+          this.renderer.setSize(window.innerWidth, window.innerHeight);
+          document.body.appendChild(this.renderer.domElement);
+          this.renderer.setClearColor(0x00000, 1.0);
+        }
+
+        initOrbitControls() {
+          this.controls = new THREE.OrbitControls(
+            this.camera,
+            this.renderer.domElement
+          );
+        }
+
+        initAxesHelper() {
+          const axesHelper = new THREE.AxesHelper(100, 100);
+          this.scene.add(axesHelper);
+        }
+
+        initLight() {
+          const light = new THREE.DirectionalLight(0xffffff, 1.0);
+          light.position.set(50, 30, 40);
+          this.scene.add(light);
+
+          const light3 = new THREE.DirectionalLight(0xffffff, 1.0);
+          light.position.set(-30, 40, 40);
+          const axesHelper = new THREE.AxesHelper(100, 100);
+          axesHelper.position.set(-80, 10, -30);
+          this.scene.add(axesHelper);
+          this.scene.add(light);
+
+          const light2 = new THREE.HemisphereLight(0xffffff, 0x080820,1);
+          this.scene.add(light2);
+        }
+
+        init() {
+          this.initScene();
+          this.initCamera();
+          this.initLight();
+          this.initAxesHelper();
+          this.initRenderer();
+          this.initOrbitControls();
+
+          //设置灯光阴影属性
+
+          //设置灯光生成阴影
+
+          THREE.Light.castShadow = true;
+
+          //如果是调试状态，还可以把灯光的调试帮助框显示出来
+
+          THREE.Light.shadowCameraVisible = true;
+
+          //设置阴影贴图质量
+
+          THREE.Light.shadowMapWidth = THREE.Light.shadowMapHeight = 1024 * 4;
+
+          //设置模型属性
+
+          //设置物体生成阴影
+
+          THREE.Mesh.castShadow = true;
+          //设置物体接收阴影，即其它物体的阴影可以显示在该物体上
+
+          THREE.Mesh.receiveShadow = true;
+          window.addEventListener("resize", () => {
+            this.windowResize();
+          });
+        }
+
+        render() {
+          this.renderer.clear();
+          this.renderer.render(this.scene, this.camera);
+        }
+
+        windowResize() {
+          this.camera.aspect = window.innerWidth / window.innerHeight;
+          this.camera.updateProjectionMatrix();
+          this.renderer.setSize(window.innerWidth, window.innerHeight);
+
+          this.render();
+        }
+
+        placeObject() {
+          // 放置plane
+          const planeGeometry = new THREE.PlaneGeometry(60, 36);
+          const planeMaterial = new THREE.MeshBasicMaterial({
+            color: 0x5352ed,
+            side: THREE.DoubleSide,
+          });
+          const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+          planeMesh.rotation.x = Math.PI / 2;
+          // this.scene.add(planeMesh);
+
+          const loader = new THREE.GLTFLoader();
+          loader.load("/server_racking_system/scene.gltf", (gltf) => {
+            gltf.scene.traverse(function (child) {
+              if (child instanceof THREE.Mesh) {
+                //设置模型生成阴影并接收阴影
+                child.castShadow = true;
+                child.receiveShadow = true;
+                child.material.emissive =  child.material.color;
+					    child.material.emissiveMap = child.material.map ;
+              }
+            });
+            gltf.scene.scale.set(0.004, 0.004, 0.004);
+            gltf.scene.position.set(-24, -0.5, -12);
+            const pivot = new THREE.Object3D();
+            pivot.add(gltf.scene);
+            gltf.scene.rotation.y = Math.PI / 2;
+            this.scene.add(gltf.scene);
+          });
+
+          loader.load("/sketchfab_robot/scene.gltf", (gltf) => {
+            console.log("gltf", gltf);
+            gltf.scene.traverse(function (child) {
+              if (child instanceof THREE.Mesh) {
+                //设置模型生成阴影并接收阴影
+                child.castShadow = true;
+                child.receiveShadow = true;
+                child.material.emissive =  child.material.color;
+					    child.material.emissiveMap = child.material.map ;
+              }
+            });
+            gltf.scene.scale.set(3, 3, 3);
+            gltf.scene.position.set(0, 2.5, -12);
+            const pivot = new THREE.Object3D();
+            pivot.add(gltf.scene);
+            gltf.scene.rotation.y = Math.PI / 3;
+            this.scene.add(gltf.scene);
+          });
+
+          loader.load("/personal_computer/scene.gltf", (gltf) => {
+            console.log("gltf", gltf);
+            gltf.scene.traverse(function (child) {
+              if (child instanceof THREE.Mesh) {
+                //设置模型生成阴影并接收阴影
+                child.castShadow = true;
+                child.receiveShadow = true;
+                child.material.emissive =  child.material.color;
+					    child.material.emissiveMap = child.material.map ;
+              }
+            });
+            gltf.scene.scale.set(5, 5, 5);
+            gltf.scene.position.set(24, 0, -12);
+            const pivot = new THREE.Object3D();
+            pivot.add(gltf.scene);
+            // gltf.scene.rotation.y = Math.PI / 3;
+            this.scene.add(gltf.scene);
+          });
+
+         
+
+          loader.load("/basic_head_structure/scene.gltf", (gltf) => {
+            console.log("gltf", gltf);
+            gltf.scene.traverse(function (child) {
+              if (child instanceof THREE.Mesh) {
+                //设置模型生成阴影并接收阴影
+                child.castShadow = true;
+                child.receiveShadow = true;
+                child.material.emissive =  child.material.color;
+					    child.material.emissiveMap = child.material.map ;
+              }
+            });
+            gltf.scene.scale.set(3, 3, 3);
+            gltf.scene.position.set(0, 2, 12);
+            const pivot = new THREE.Object3D();
+            pivot.add(gltf.scene);
+            gltf.scene.rotation.y = Math.PI;
+            this.scene.add(gltf.scene);
+          });
+
+          this.addRoad();
+          this.addRoad2();
+          this.addRoad3();
+        }
+
+        addRoad(position) {
+          const material = new THREE.MeshBasicMaterial({});
+          const textureLoader = new THREE.TextureLoader();
+          const roadMap1 = textureLoader.load("/img/traffic_01.png");
+          roadMap1.wrapS = THREE.RepeatWrapping;
+          roadMap1.wrapT = THREE.RepeatWrapping;
+          roadMap1.rotation = Math.PI / 2;
+          roadMap1.offset.set(0.5, 0.5);
+          const roadMap2 = textureLoader.load("/img/traffic_01.png");
+          roadMap2.wrapS = THREE.RepeatWrapping;
+          roadMap2.wrapT = THREE.RepeatWrapping;
+          roadMap2.rotation = Math.PI / 2;
+          roadMap2.offset.set(0.5, 0.5);
+          const roadMap3 = textureLoader.load("/img/traffic_01.png");
+          roadMap2.wrapS = THREE.RepeatWrapping;
+          roadMap2.wrapT = THREE.RepeatWrapping;
+          roadMap2.rotation = Math.PI / 2;
+          roadMap2.offset.set(0.5, 0.5);
+          this.roadMaterial1 = [
+            new THREE.MeshBasicMaterial({
+              map: roadMap1,
+              transparent: true,
+              depthWrite: false,
+            }),
+            new THREE.MeshBasicMaterial({
+              map: roadMap2,
+              transparent: true,
+              depthWrite: false,
+            }),
+            new THREE.MeshBasicMaterial({
+              map: roadMap3,
+              transparent: true,
+              depthWrite: false,
+            }),
+          ];
+          const thickness = 2;
+          const group = new THREE.Group();
+          this.roadMaterial1.forEach((material) => {
+            const geometry = cga.extrudeToGeometryBuffer(
+              [cga.v3(-thickness / 2, 0, 0), cga.v3(thickness / 2, 0, 0)],
+              [new THREE.Vector3(-10, 0.5, 0), new THREE.Vector3(10, 0.5, 0)],
+              {
+                normal: cga.v3(0, 0, 1),
+                isClosed: true,
+                sealStart: false,
+                sealEnd: false,
+                textureScale: new cga.Vector2(1 / 3, 1 / 2000),
+              }
+            );
+            const mesh = new THREE.Mesh(geometry, material);
+            group.add(mesh);
+          });
+          group.position.set(-10, 0, -12);
+          this.scene.add(group);
+        }
+
+        addRoad2(position) {
+          const material = new THREE.MeshBasicMaterial({});
+          const textureLoader = new THREE.TextureLoader();
+          const roadMap1 = textureLoader.load("/img/traffic_01.png");
+          roadMap1.wrapS = THREE.RepeatWrapping;
+          roadMap1.wrapT = THREE.RepeatWrapping;
+          roadMap1.rotation = Math.PI / 2;
+          roadMap1.offset.set(0.5, 0.5);
+          const roadMap2 = textureLoader.load("/img/traffic_01.png");
+          roadMap2.wrapS = THREE.RepeatWrapping;
+          roadMap2.wrapT = THREE.RepeatWrapping;
+          roadMap2.rotation = Math.PI / 2;
+          roadMap2.offset.set(0.5, 0.5);
+          const roadMap3 = textureLoader.load("/img/traffic_01.png");
+          roadMap2.wrapS = THREE.RepeatWrapping;
+          roadMap2.wrapT = THREE.RepeatWrapping;
+          roadMap2.rotation = Math.PI / 2;
+          roadMap2.offset.set(0.5, 0.5);
+          this.roadMaterial2 = [
+            new THREE.MeshBasicMaterial({
+              map: roadMap1,
+              transparent: true,
+              depthWrite: false,
+            }),
+            new THREE.MeshBasicMaterial({
+              map: roadMap2,
+              transparent: true,
+              depthWrite: false,
+            }),
+            new THREE.MeshBasicMaterial({
+              map: roadMap3,
+              transparent: true,
+              depthWrite: false,
+            }),
+          ];
+          const thickness = 2;
+          const group = new THREE.Group();
+          this.roadMaterial2.forEach((material) => {
+            const geometry = cga.extrudeToGeometryBuffer(
+              [cga.v3(-thickness / 2, 0, 0), cga.v3(thickness / 2, 0, 0)],
+              [
+                new THREE.Vector3(-10, 0, 0),
+                new THREE.Vector3(10, 0, 0),
+                new THREE.Vector3(-10, 0, 0),
+              ],
+              {
+                normal: cga.v3(0, 0, 1),
+                isClosed: true,
+                sealStart: false,
+                sealEnd: false,
+                textureScale: new cga.Vector2(1 / thickness, 1 / 2500),
+              }
+            );
+            const mesh = new THREE.Mesh(geometry, material);
+            group.add(mesh);
+          });
+          group.position.set(0, 0, 0);
+          group.rotation.y = Math.PI / 2;
+          this.scene.add(group);
+        }
+
+        addRoad3(position) {
+          const material = new THREE.MeshBasicMaterial({});
+          const textureLoader = new THREE.TextureLoader();
+          const roadMap1 = textureLoader.load("/img/traffic_01.png");
+          roadMap1.wrapS = THREE.RepeatWrapping;
+          roadMap1.wrapT = THREE.RepeatWrapping;
+          roadMap1.rotation = Math.PI / 2;
+          roadMap1.offset.set(0.5, 0.5);
+          const roadMap2 = textureLoader.load("/img/traffic_01.png");
+          roadMap2.wrapS = THREE.RepeatWrapping;
+          roadMap2.wrapT = THREE.RepeatWrapping;
+          roadMap2.rotation = Math.PI / 2;
+          roadMap2.offset.set(0.5, 0.5);
+          const roadMap3 = textureLoader.load("/img/traffic_01.png");
+          roadMap2.wrapS = THREE.RepeatWrapping;
+          roadMap2.wrapT = THREE.RepeatWrapping;
+          roadMap2.rotation = Math.PI / 2;
+          roadMap2.offset.set(0.5, 0.5);
+          this.roadMaterial3 = [
+            new THREE.MeshBasicMaterial({
+              map: roadMap1,
+              transparent: true,
+              depthWrite: false,
+            }),
+            new THREE.MeshBasicMaterial({
+              map: roadMap2,
+              transparent: true,
+              depthWrite: false,
+            }),
+            new THREE.MeshBasicMaterial({
+              map: roadMap3,
+              transparent: true,
+              depthWrite: false,
+            }),
+          ];
+          const thickness = 2;
+          const group = new THREE.Group();
+          this.roadMaterial3.forEach((material) => {
+            const geometry = cga.extrudeToGeometryBuffer(
+              [cga.v3(-thickness / 2, 0, 0), cga.v3(thickness / 2, 0, 0)],
+              [
+                new THREE.Vector3(-10, 0, 0),
+                new THREE.Vector3(10, 0, 0),
+                new THREE.Vector3(-10, 0, 0),
+              ],
+              {
+                normal: cga.v3(0, 0, 1),
+                isClosed: true,
+                sealStart: false,
+                sealEnd: false,
+                textureScale: new cga.Vector2(1 / thickness, 1 / 2500),
+              }
+            );
+            const mesh = new THREE.Mesh(geometry, material);
+            group.add(mesh);
+          });
+          group.position.set(10, 0, -12);
+          this.scene.add(group);
+        }
+
+        animateAction() {
+          this.roadMaterial1.forEach((material, index) => {
+            material.map.offset.x += 0.002 * (index + 1);
+          });
+          this.roadMaterial2.forEach((material, index) => {
+            material.map.offset.x += 0.002 * (index + 1);
+          });
+          this.roadMaterial3.forEach((material, index) => {
+            material.map.offset.x += 0.002 * (index + 1);
+          });
+        }
+
+        animate() {
+          this.animateAction();
+          this.controls.update();
+          this.render();
+          requestAnimationFrame(() => {
+            this.animate();
+          });
+        }
+      }
+
+      const program = new Program();
+      program.placeObject();
+      program.animate();
+    </script>
+  </body>
+</html>
